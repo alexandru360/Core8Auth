@@ -1,0 +1,5 @@
+﻿/.dockerignore
+/.idea/.idea.Core8Auth/.idea/.gitignore
+/Core8Auth.sln
+/.idea/.idea.Core8Auth/.idea/encodings.xml
+/global.json
