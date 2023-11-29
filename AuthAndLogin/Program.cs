@@ -41,8 +41,7 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStore
 // builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer("name=DefaultConn"));
 
 // SqLite
-builder.Services.AddDbContext<AppDbContext>(o =>
-    o.UseSqlite("name=sqLite"));
+builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("name=sqLite"));
 
 var app = builder.Build();
 

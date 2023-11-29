@@ -3,3 +3,9 @@
 /Core8Auth.sln
 /.idea/.idea.Core8Auth/.idea/encodings.xml
 /global.json
+
+/AuthAndLogin/bin/*
+/AuthAndLogin/obj/*
+/Repository/bin/*
+/Repository/obj/*
+/.idea/*
