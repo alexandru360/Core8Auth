@@ -1,5 +1,7 @@
 **Dotnet Core 8 - Authentication/Authorization Template**
 
+![Authentication-swagger](auth-swagger.png "Authentication-swagger")
+
 In order to get very easily authentication & authorization in a .Net Core 8 project you have to follow a few steps as follows:
 
 1. **Add swagger authentication**
