@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+// Step 1 --------------------------- Add swagger authentication ---------------------------
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Core8Auth", Version = "v1" });
@@ -35,13 +37,19 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+// Step 1 - End ---------------------- Add swagger authentication ---------------------------
 
+// Step 2 --------------------------- Add authentication & authorization support ---------------------------
+builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+// Step 2 - End --------------------------- Add authentication & authorization support ---------------------------
+
+// Step 3 --------------------------- Database ---------------------------
 // SqlServer
 // builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer("name=DefaultConn"));
 
 // SqLite
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("name=sqLite"));
+// Step 3 - End --------------------------- Database ---------------------------
 
 var app = builder.Build();
 
@@ -59,7 +67,9 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
+// Step 4 --------------------------- Controller ---------------------------
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
+// Step 4 - End --------------------------- Controller ---------------------------
 
 app.MapGet("/weatherforecast", () =>
     {
