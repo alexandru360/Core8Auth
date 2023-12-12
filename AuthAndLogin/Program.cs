@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-var builder = WebApplication.CreateBuilder(args);
+var bud = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+bud.Services.AddEndpointsApiExplorer();
 
 // Step 1 --------------------------- Add swagger authentication ---------------------------
-builder.Services.AddSwaggerGen(c =>
+bud.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Core8Auth", Version = "v1" });
 
@@ -40,7 +40,28 @@ builder.Services.AddSwaggerGen(c =>
 // Step 1 - End ---------------------- Add swagger authentication ---------------------------
 
 // Step 2 --------------------------- Add authentication & authorization support ---------------------------
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+bud.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+
+// bud.Services.Configure<IdentityOptions>(o =>
+// {
+//     // Password settings.
+//     o.Password.RequireDigit = true;
+//     o.Password.RequireLowercase = true;
+//     o.Password.RequireNonAlphanumeric = true;
+//     o.Password.RequireUppercase = true;
+//     o.Password.RequiredLength = 6;
+//     o.Password.RequiredUniqueChars = 1;
+//
+//     // Lockout settings.
+//     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+//     o.Lockout.MaxFailedAccessAttempts = 5;
+//     o.Lockout.AllowedForNewUsers = true;
+//
+//     // User settings.
+//     o.User.AllowedUserNameCharacters =
+//         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//     o.User.RequireUniqueEmail = false;
+// });
 // Step 2 - End --------------------------- Add authentication & authorization support ---------------------------
 
 // Step 3 --------------------------- Database ---------------------------
@@ -48,10 +69,12 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStore
 // builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer("name=DefaultConn"));
 
 // SqLite
-builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("name=sqLite"));
+bud.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("name=sqLite"));
 // Step 3 - End --------------------------- Database ---------------------------
 
-var app = builder.Build();
+bud.Services.AddAuthorization();
+
+var app = bud.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -60,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -71,7 +96,7 @@ var summaries = new[]
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 // Step 4 - End --------------------------- Controller ---------------------------
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weather-forecast-require-auth", () =>
     {
         var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast
@@ -85,7 +110,7 @@ app.MapGet("/weatherforecast", () =>
     })
     .RequireAuthorization()
     .WithName("GetWeatherForecast")
-    .WithOpenApi();
+    .WithOpenApi().RequireAuthorization();
 
 app.Run();
 
